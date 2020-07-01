@@ -1,0 +1,28 @@
+--cpu=Cortex-M4.fp.sp
+"read_sht30\startup_stm32f407xx.o"
+"read_sht30\main.o"
+"read_sht30\stm32f4xx_it.o"
+"read_sht30\stm32f4xx_hal_msp.o"
+"read_sht30\stm32f4xx_hal_i2c.o"
+"read_sht30\stm32f4xx_hal_i2c_ex.o"
+"read_sht30\stm32f4xx_hal_rcc.o"
+"read_sht30\stm32f4xx_hal_rcc_ex.o"
+"read_sht30\stm32f4xx_hal_flash.o"
+"read_sht30\stm32f4xx_hal_flash_ex.o"
+"read_sht30\stm32f4xx_hal_flash_ramfunc.o"
+"read_sht30\stm32f4xx_hal_gpio.o"
+"read_sht30\stm32f4xx_hal_dma_ex.o"
+"read_sht30\stm32f4xx_hal_dma.o"
+"read_sht30\stm32f4xx_hal_pwr.o"
+"read_sht30\stm32f4xx_hal_pwr_ex.o"
+"read_sht30\stm32f4xx_hal_cortex.o"
+"read_sht30\stm32f4xx_hal.o"
+"read_sht30\stm32f4xx_hal_exti.o"
+"read_sht30\stm32f4xx_hal_tim.o"
+"read_sht30\stm32f4xx_hal_tim_ex.o"
+"read_sht30\stm32f4xx_hal_uart.o"
+"read_sht30\system_stm32f4xx.o"
+--library_type=microlib --strict --scatter "Read_SHT30\Read_SHT30.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "Read_SHT30.map" -o Read_SHT30\Read_SHT30.axf
