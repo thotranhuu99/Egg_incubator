@@ -210,6 +210,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>\\Read_SHT30\../Src/main.c\SHT30_check_connection\times</ItemText>
         </Ww>
+        <Ww>
+          <count>12</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\Read_SHT30\../Src/main.c\ACK_to_send</ItemText>
+        </Ww>
       </WatchWindow1>
       <Tracepoint>
         <THDelay>0</THDelay>

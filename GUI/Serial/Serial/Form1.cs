@@ -53,6 +53,14 @@ namespace Serial
             //Uart_Communication.Read_UART(communication_running, serialPort1, 11, textBox2, textBox5,ref data_received,ref ACK_received);
             textBox2.Text = data_received[0].ToString();
             textBox5.Text = data_received[1].ToString();
+            if (ACK_received == 1)
+            {
+                textBox3.Text = "ACK_received";
+            }
+            else
+            {
+                textBox3.Text = "";
+            }
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -230,9 +238,13 @@ namespace Serial
             }
         }
 
+        private void textBox3_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
     }
 
-   
+
 
     public class Uart_Communication
     {

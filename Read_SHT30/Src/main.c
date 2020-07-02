@@ -53,6 +53,7 @@ DMA_HandleTypeDef hdma_uart5_rx;
 DMA_HandleTypeDef hdma_uart5_tx;
 
 /* USER CODE BEGIN PV */
+volatile uint8_t ACK_to_send=0;
 volatile uint8_t flag=1;
 uint8_t soft_reset[2] = {0x30,0x2A};
 uint8_t break_cmd[2] = {0x30,0x93};
@@ -69,8 +70,9 @@ double temperature;
 double temperature_pre;
 double humidity;
 double humidity_pre;
-double temperature_set;
+double temperature_set = 50;
 uint8_t run;
+uint8_t Receive_error;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -160,7 +162,6 @@ void SHT30_check_connection(double temperature, double temperature_pre, double h
   HAL_I2C_DeInit(&(obj->handle));
 }*/
 
-
 void Pack_data_to_send_UART(uint8_t *receive, uint8_t ACK_send)
 {
 	Send_UART[0]=0x53;// STX[1] (character S)
@@ -181,7 +182,7 @@ void Pack_data_to_send_UART(uint8_t *receive, uint8_t ACK_send)
 		}
 }
 
-void Process_UART_received(uint8_t Receive_UART[8])
+uint8_t Process_UART_received(uint8_t Receive_UART[8])
 {	
 	if(Receive_UART[0]=0x53, Receive_UART[1]=0x65, Receive_UART[6]=0x45, Receive_UART[7]=0x6e)
 	{
@@ -191,20 +192,43 @@ void Process_UART_received(uint8_t Receive_UART[8])
 				if (Receive_UART[5] == crc8(data,2))
 				{
 					temperature_set = calculate_temperature(Receive_UART[3],Receive_UART[4], Receive_UART[5]);
+					return(0);
 				}
 				else
 				{
-					return;
+					return(1);
 				}
 		}
 		if (Receive_UART[2] == 0x52)
 		{
 			run =1;
+			return(0);
 		}
 		if (Receive_UART[2] == 0x50)
 		{
 			run =0;
+			return(0);
 		}
+	}
+		return(1);
+}
+
+void control_on_off(uint8_t run,double temperature, double temperature_set)
+{
+	if (run == 1)
+	{
+		if (temperature_set > temperature)
+		{
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
+		}
+		else
+		{
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+		}
+	}
+	else
+	{
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
 	}
 }
 
@@ -260,7 +284,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		Process_UART_received(Received_UART);
 		//HAL_I2C_Master_Transmit(&hi2c1, SHT30<<1, fetch, 2, 100);
 		HAL_I2C_Master_Transmit_DMA(&hi2c1, SHT30<<1, fetch, 2);
 		HAL_Delay(10);
@@ -271,8 +294,10 @@ int main(void)
 		temperature = calculate_temperature(receive[0], receive[1], receive[2]);
 		humidity = calculate_humidity(receive[3], receive[4], receive[5]);
 		SHT30_check_connection(temperature, temperature_pre, humidity, humidity_pre);
-		Pack_data_to_send_UART(receive, 0); //Save in Send_UART[10]
+		Pack_data_to_send_UART(receive, ACK_to_send); //Save in Send_UART[10]
 		HAL_UART_Transmit_DMA(&huart5, Send_UART, 11);
+		ACK_to_send = 0;
+		control_on_off(run, temperature, temperature_set);
 		//HAL_UART_Receive_DMA (&huart5, Received_UART, 8);
 		while(flag==1);
 		flag=1;
@@ -462,6 +487,7 @@ static void MX_DMA_Init(void)
   * @retval None
   */
 static void MX_GPIO_Init(void)
+
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
@@ -517,6 +543,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	__HAL_TIM_CLEAR_FLAG(&htim7, TIM_FLAG_UPDATE);
 		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 		count++;
+	}
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if (huart->Instance == huart5.Instance)
+	{
+		Receive_error = Process_UART_received(Received_UART);
+		if (Receive_error == 0)
+		{
+			ACK_to_send = 1;
+		}
 	}
 }
 
