@@ -183,17 +183,32 @@
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\Read_SHT30\../Src/main.c\Receive_UART,0x0A</ItemText>
+          <ItemText>\\Read_SHT30\../Src/main.c\run</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\Read_SHT30\../Src/main.c\run</ItemText>
+          <ItemText>\\Read_SHT30\../Src/main.c\temperature_set</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\Read_SHT30\../Src/main.c\temperature_set</ItemText>
+          <ItemText>\\Read_SHT30\../Src/main.c\Received_UART</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\Read_SHT30\../Src/main.c\temperature</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\Read_SHT30\../Src/main.c\temperature_pre</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\Read_SHT30\../Src/main.c\SHT30_check_connection\times</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

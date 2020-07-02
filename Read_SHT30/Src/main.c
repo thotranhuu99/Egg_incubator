@@ -61,7 +61,6 @@ uint8_t periodic[2]= {0x22, 0x36};
 uint8_t fetch[2] = {0xE0, 0x00};
 uint8_t receive[6]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 uint8_t test[2] = {0x21, 0x25};
-uint8_t test_out;
 //uint8_t send_data_uart[6]={48,49,50,51,52,53}, receive_data_uart[4]={0,0,0,0};
 uint8_t Send_UART[11];
 uint8_t Received_UART[8];
@@ -82,7 +81,10 @@ static void MX_I2C1_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_UART5_Init(void);
 /* USER CODE BEGIN PFP */
-
+void I2C_ReInit(void)
+{
+    MX_I2C1_Init();
+}
 static uint8_t crc8(const uint8_t *data, int len) {
 	const uint8_t POLYNOMIAL = 0x31;
   uint8_t crc = 0xFF;
@@ -119,24 +121,58 @@ static double calculate_humidity(uint8_t MSB, uint8_t LSB, uint8_t crc)
 
 void SHT30_initialize()
 {
-	HAL_Delay(1);
+	HAL_Delay(100);
 	HAL_I2C_Master_Transmit(&hi2c1, SHT30<<1, break_cmd, 2, 100);
 	//HAL_I2C_Master_Transmit_DMA(&hi2c1, SHT30<<1, break_cmd, 2);
-	HAL_Delay(1);
+	HAL_Delay(100);
 	HAL_I2C_Master_Transmit(&hi2c1, SHT30<<1, soft_reset, 2, 100);
 	//HAL_I2C_Master_Transmit_DMA(&hi2c1, SHT30<<1, soft_reset, 2);
-	HAL_Delay(1);
+	HAL_Delay(100);
 	HAL_I2C_Master_Transmit(&hi2c1, SHT30<<1, periodic, 2, 100);
 	//HAL_I2C_Master_Transmit_DMA(&hi2c1, SHT30<<1, periodic, 2);
-	HAL_Delay(1);
+	HAL_Delay(100);
 }
 
-void Pack_data_to_send_UART(uint8_t *receive)
+void SHT30_check_connection(double temperature, double temperature_pre, double humidity, double humidity_pre)
+{
+	static int times;
+	if (temperature == temperature_pre & humidity == humidity_pre)
+	{
+		times ++;
+	}
+	else
+	{
+		times =0;
+	}
+	if( times > 4)
+	{
+		I2C_ReInit();
+		SHT30_initialize();
+	}
+}
+
+/*void i2c_deinit(i2c_t *obj)
+{
+  HAL_NVIC_DisableIRQ(obj->irq);
+#if !defined(STM32F0xx) && !defined(STM32L0xx)
+  HAL_NVIC_DisableIRQ(obj->irqER);
+#endif // !defined(STM32F0xx) && !defined(STM32L0xx)
+  HAL_I2C_DeInit(&(obj->handle));
+}*/
+
+
+void Pack_data_to_send_UART(uint8_t *receive, uint8_t ACK_send)
 {
 	Send_UART[0]=0x53;// STX[1] (character S)
 	Send_UART[1]=0x65;// STX[2] (character e)
-	Send_UART[8]=0x2B;//ACK (character +)
-	//Send_UART[8]=0x2D; //Not ACK (character -)
+	if (ACK_send ==1)
+	{
+		Send_UART[8]=0x2B;//ACK (character +)
+	}
+	else
+	{
+	Send_UART[8]=0x2D; //Not ACK (character -)
+	}
 	Send_UART[9]=0x45;// ETX[1] (character E)
 	Send_UART[10]=0x6e;// ETX[2] (character n)
 	for (int i=0; i<6; i++)
@@ -171,6 +207,7 @@ void Process_UART_received(uint8_t Receive_UART[8])
 		}
 	}
 }
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -183,7 +220,7 @@ void Process_UART_received(uint8_t Receive_UART[8])
   * @retval int
   */
 int main(void)
-	{
+{
   /* USER CODE BEGIN 1 */
 	
   /* USER CODE END 1 */
@@ -216,9 +253,9 @@ int main(void)
 	
 	SHT30_initialize();
 	HAL_TIM_Base_Start_IT(&htim7);
-	test_out = crc8(test, 2);
+	HAL_UART_Receive_DMA (&huart5, Received_UART, 8);
   /* USER CODE END 2 */
-	
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -233,9 +270,10 @@ int main(void)
 		//HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 		temperature = calculate_temperature(receive[0], receive[1], receive[2]);
 		humidity = calculate_humidity(receive[3], receive[4], receive[5]);
-		Pack_data_to_send_UART(receive); //Save in Send_UART[10]
+		SHT30_check_connection(temperature, temperature_pre, humidity, humidity_pre);
+		Pack_data_to_send_UART(receive, 0); //Save in Send_UART[10]
 		HAL_UART_Transmit_DMA(&huart5, Send_UART, 11);
-		HAL_UART_Receive_DMA (&huart5, Received_UART, 8);
+		//HAL_UART_Receive_DMA (&huart5, Received_UART, 8);
 		while(flag==1);
 		flag=1;
     /* USER CODE END WHILE */
@@ -429,12 +467,23 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PA1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PD12 */
   GPIO_InitStruct.Pin = GPIO_PIN_12;

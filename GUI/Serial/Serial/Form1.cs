@@ -22,7 +22,8 @@ namespace Serial
         }
         //Global Variable define begin
         int communication_running = 0;
-
+        UInt16 ACK_received;
+        double[] data_received = new double[2]; 
         //Global Variable define end
 
         void getAvailablePort()
@@ -34,6 +35,8 @@ namespace Serial
         private void Form1_Load(object sender, EventArgs e)
         {
             Init_Timer();
+            serialPort1.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
+
         }
 
         private Timer timer = new Timer();
@@ -47,7 +50,9 @@ namespace Serial
         void timer_Tick(object sender, EventArgs e)
         {
 
-            Uart_Communication.Read_UART(communication_running, serialPort1, textBox2, textBox5, 11);
+            //Uart_Communication.Read_UART(communication_running, serialPort1, 11, textBox2, textBox5,ref data_received,ref ACK_received);
+            textBox2.Text = data_received[0].ToString();
+            textBox5.Text = data_received[1].ToString();
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -73,6 +78,7 @@ namespace Serial
                     button1.Enabled = true;
                     textBox1.Enabled = true;
                     textBox4.Enabled = true;
+                    textBox6.Enabled = true;
                     button3.Enabled = false;
                     button4.Enabled = true;
                     button2.Enabled = true;
@@ -99,6 +105,7 @@ namespace Serial
             button4.Enabled = false;
             textBox1.Enabled = false;
             textBox4.Enabled = false;
+            textBox6.Enabled = false;
             communication_running = 0;
         }
 
@@ -112,7 +119,7 @@ namespace Serial
             textBox1.Text = "";
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        /*private void button2_Click(object sender, EventArgs e)
         {
             try
             {
@@ -123,7 +130,7 @@ namespace Serial
             {
                 textBox2.Text = "Timeout Exception";
             }
-        }
+        }*/
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
@@ -164,9 +171,17 @@ namespace Serial
         {
             double temperature_set;
             Byte[] temperature_set_byte;
-            temperature_set = Convert.ToDouble(textBox4.Text);
-            temperature_set_byte = new Byte[] { SHT30.Encode_temperature(temperature_set)[0], SHT30.Encode_temperature(temperature_set)[1] };
-            Uart_Communication.Send_UART(communication_running, "Set_temp", serialPort1, new Byte[] { temperature_set_byte[0], temperature_set_byte[1] });
+            try
+            {
+                temperature_set = Convert.ToDouble(textBox4.Text);
+                temperature_set_byte = new Byte[] { SHT30.Encode_temperature(temperature_set)[0], SHT30.Encode_temperature(temperature_set)[1] };
+                Uart_Communication.Send_UART(communication_running, "Set_temp", serialPort1, new Byte[] { temperature_set_byte[0], temperature_set_byte[1] });
+                textBox6.Text = "No error";
+            }
+            catch(Exception exeption)
+            {
+                textBox6.Text = exeption.Message;
+            }    
         }
 
         private void button2_Click_1(object sender, EventArgs e)
@@ -176,10 +191,7 @@ namespace Serial
 
         private void button7_Click(object sender, EventArgs e)
         {
-            Byte[] test = new byte[4];
-            double test_db;
-            test = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, SHT30.Encode_humidity(22)[0], SHT30.Encode_humidity(22)[1] };
-            test_db = SHT30.Calculate_humidity(test);
+            double test_db = (double) ACK_received;
             textBox3.Text = test_db.ToString();
         }
 
@@ -192,44 +204,42 @@ namespace Serial
         {
 
         }
-    }
 
-    public static class crc
-    {
-        public static byte[] test_1 = new byte[] { 0x72, 0x23 };
-
-        public static Byte crc8(Byte[] data, uint len)
+        public void DataReceivedHandler(
+                        object sender,
+                        SerialDataReceivedEventArgs e)
         {
-            const uint POLYNOMIAL = 0x31;
-            const uint constant_1 = 0x80;
-            uint crc = 0xFF;
-            uint k = 0;
-            for (uint j = len; j > 0; --j)
-            {
-                crc ^= data[k];
-                k++;
+            Uart_Communication.Read_UART(communication_running, serialPort1, 11, ref data_received, ref ACK_received);
+        }
 
-                for (uint i = 8; i > 0; --i)
-                {
-                    uint Temp = crc & constant_1;
-                    if (Temp == 0)
-                    {
-                        crc = (crc << 1);
-                    }
-                    else
-                        crc = (crc << 1) ^ POLYNOMIAL;
-                }
+        delegate void SetTextCallback(string text);
+
+        private void SetText(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (this.textBox1.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SetText);
+                this.Invoke(d, new object[] { text });
             }
-            return (Byte)crc;
-        } //Calculate and return crc in Byte
+            else
+            {
+                this.textBox1.Text = text;
+            }
+        }
+
     }
+
+   
 
     public class Uart_Communication
     {
 
         public static Byte[] Receive = new Byte[6];
 
-        public static int Read_UART(int communication_running, SerialPort serialPort1, TextBox textBox_temperature, TextBox textBox_humidity, int len)
+        public static int Read_UART(int communication_running, SerialPort serialPort1, int len, ref double[] Data_received,ref UInt16 ACK_received )
         {
             int header_detected = 0;
             int error = 1;
@@ -244,10 +254,10 @@ namespace Serial
             if (communication_running == 1)
             {
                 int[] header_dectect_byte = new int[2];
-                for (int i = 1; i < len; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     header_dectect_byte[0] = serialPort1.ReadByte();
-                    header_dectect_byte[1] = serialPort1.ReadByte();
+                    header_dectect_byte[1] = serialPort1.ReadByte();        
                     header_detected = header_dectect(header_dectect_byte, STX);
                     if (header_detected == 1)
                     {
@@ -260,10 +270,20 @@ namespace Serial
                         error = check_frame(Receive_byte, new byte[] { (Byte)STX[0], (Byte)STX[1] }, ETX, ACK, not_ACK, 11);
                         if (error == 0)
                         {
+                            if (Receive_byte[len-3] == 0x2B)
+                            {
+                                ACK_received = 1;
+                            }
+                            else
+                            {
+                                ACK_received = 0;
+                            }
                             temperature_read = SHT30.Calculate_temperature(Receive_byte);
                             humidity_read = SHT30.Calculate_humidity(Receive_byte);
-                            textBox_temperature.Text = temperature_read.ToString();
-                            textBox_humidity.Text = humidity_read.ToString();
+                            Data_received[0] = temperature_read;
+                            Data_received[1] = humidity_read;
+                            //textBox_temperature.Text = temperature_read.ToString();
+                            //textBox_humidity.Text = humidity_read.ToString();
                             return 1;
                         }
                     }
@@ -361,7 +381,37 @@ namespace Serial
         }
 
     }
-    
+
+    public static class crc
+    {
+        public static byte[] test_1 = new byte[] { 0x72, 0x23 };
+
+        public static Byte crc8(Byte[] data, uint len)
+        {
+            const uint POLYNOMIAL = 0x31;
+            const uint constant_1 = 0x80;
+            uint crc = 0xFF;
+            uint k = 0;
+            for (uint j = len; j > 0; --j)
+            {
+                crc ^= data[k];
+                k++;
+
+                for (uint i = 8; i > 0; --i)
+                {
+                    uint Temp = crc & constant_1;
+                    if (Temp == 0)
+                    {
+                        crc = (crc << 1);
+                    }
+                    else
+                        crc = (crc << 1) ^ POLYNOMIAL;
+                }
+            }
+            return (Byte)crc;
+        } //Calculate and return crc in Byte
+    }
+
 
     public class SHT30
     {
