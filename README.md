@@ -1,2 +1,2 @@
 Transmission frames and data_decode:
-![alt text](https://github.com/thotranhuu99/SHT30/blob/master/Images/Transmission_frame.jpg | width=100)
+<img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/Transmission_frame.jpg" width="400" height="790">
