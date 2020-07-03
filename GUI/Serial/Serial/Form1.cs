@@ -21,6 +21,7 @@ namespace Serial
         int communication_running = 0;
         //UInt16 ACK_received;
         double[] data_received = new double[2];
+        double temperature_set = 50;
 
         //Global Variable define end
         public Form1()
@@ -219,8 +220,10 @@ namespace Serial
             try
             {
                 temperature_set = Convert.ToDouble(textBox4.Text);
+
                 if(temperature_set>-45 & temperature_set < 130 )
                 {
+                    this.temperature_set = temperature_set;
                     temperature_set_byte = new Byte[] { SHT30.Encode_temperature(temperature_set)[0], SHT30.Encode_temperature(temperature_set)[1] };
                     Uart_Communication.Send_UART(communication_running, "Set_temp", serialPort1, new Byte[] { temperature_set_byte[0], temperature_set_byte[1] });
                     textBox6.Text = "No error";
