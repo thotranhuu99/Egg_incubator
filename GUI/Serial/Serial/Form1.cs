@@ -17,6 +17,7 @@ namespace Serial
     public partial class Form1 : Form
     {
         //Global Variable define begin
+        int run = 0;
         int communication_running = 0;
         //UInt16 ACK_received;
         double[] data_received = new double[2];
@@ -195,6 +196,7 @@ namespace Serial
 
         private void button2_Click_1(object sender, EventArgs e)
         {
+            run = 1;
             Uart_Communication.Send_UART(communication_running, "Run", serialPort1, new byte[2]);
             this.button2.Enabled = false;
             this.button5.Enabled = false;
@@ -203,6 +205,7 @@ namespace Serial
 
         private void button5_Click(object sender, EventArgs e)
         {
+            run = 0;
             Uart_Communication.Send_UART(communication_running, "Stop", serialPort1, new byte[2]);
             this.button2.Enabled = false;
             this.button5.Enabled = false;
@@ -255,7 +258,7 @@ namespace Serial
             {
                 ACK_check.Wait_for_ACK = 0;
                 SetText("ACK_received");
-                EnableControlButton();
+                EnableControlButton(run);
             }
             else
             {
@@ -281,20 +284,31 @@ namespace Serial
             }
         } // Print "ACK received" when received ACK
 
-        delegate void EnableControlButtonsCallback(); // Safely cross-threading modify
+        delegate void EnableControlButtonsCallback(int run); // Safely cross-threading modify
 
-        private void EnableControlButton()
+        private void EnableControlButton(int run)
         {
             if (this.button2.InvokeRequired)
             {
                 EnableControlButtonsCallback d = new EnableControlButtonsCallback(EnableControlButton);
-                this.Invoke(d);
+                this.Invoke(d, new object[] { run });
             }
             else
             {
-                this.button2.Enabled = true;
-                this.button5.Enabled = true;
-                this.button6.Enabled = true;
+                if (run ==0)
+                {
+                    this.button2.Enabled = true;
+                    this.button5.Enabled = false;
+                    this.button6.Enabled = true;
+                }
+                else
+                {
+                    this.button2.Enabled = false;
+                    this.button5.Enabled = true;
+                    this.button6.Enabled = true;
+                }
+
+              
             }
         }  // Enable control buttons when receive ACK
 

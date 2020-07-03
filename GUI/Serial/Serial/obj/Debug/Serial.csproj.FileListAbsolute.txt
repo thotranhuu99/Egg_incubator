@@ -7,3 +7,4 @@ C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.csproj.CoreCompi
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.exe
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.pdb
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.Form1.resources
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.csprojAssemblyReference.cache

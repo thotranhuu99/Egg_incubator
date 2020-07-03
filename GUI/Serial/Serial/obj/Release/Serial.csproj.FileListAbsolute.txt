@@ -7,3 +7,4 @@ C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.csproj.CoreCom
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.exe
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.pdb
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.Form1.resources
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.csprojAssemblyReference.cache
