@@ -1,6 +1,6 @@
-Data decode formulas:  
+I> Data decode formulas:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/Formulas.png">  
-Transmission frames:  
+II> Transmission frames:  
 From STM32F407 to PC:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/Frame_1.png" width="600">  
 From PC to STM32F407:  
