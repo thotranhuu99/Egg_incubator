@@ -1,0 +1,9 @@
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Release\Serial.exe.config
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Release\Serial.exe
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Release\Serial.pdb
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.Properties.Resources.resources
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.csproj.GenerateResource.cache
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.csproj.CoreCompileInputs.cache
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.exe
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.pdb
+C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Release\Serial.Form1.resources

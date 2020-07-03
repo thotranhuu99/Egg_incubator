@@ -1,7 +1,6 @@
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Debug\Serial.exe.config
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Debug\Serial.exe
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Debug\Serial.pdb
-C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.csprojAssemblyReference.cache
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.Properties.Resources.resources
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.csproj.GenerateResource.cache
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.csproj.CoreCompileInputs.cache

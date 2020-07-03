@@ -10,34 +10,35 @@ using System.Windows.Forms;
 using System.IO.Ports;
 using System.CodeDom.Compiler;
 using System.Runtime.Remoting.Messaging;
+using System.Runtime.CompilerServices;
 
 namespace Serial
 {
     public partial class Form1 : Form
     {
+        //Global Variable define begin
+        int communication_running = 0;
+        //UInt16 ACK_received;
+        double[] data_received = new double[2];
+
+        //Global Variable define end
         public Form1()
         {
             InitializeComponent();
             getAvailablePort();
         }
-        //Global Variable define begin
-        int communication_running = 0;
-        UInt16 ACK_received;
-        double[] data_received = new double[2]; 
-        //Global Variable define end
-
         void getAvailablePort()
         {
             String[] ports = SerialPort.GetPortNames();
             comboBox1.Items.AddRange(ports);
-        }
+        } // Get available COM ports
 
         private void Form1_Load(object sender, EventArgs e)
         {
             Init_Timer();
             serialPort1.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 
-        }
+        } //Run once when Form start
 
         private Timer timer = new Timer();
 
@@ -46,13 +47,26 @@ namespace Serial
             timer.Interval = 1000; // every 1 second
             timer.Tick += new EventHandler(timer_Tick);
             timer.Enabled = true;
-        }
+        }  // Init 1s timer for UI update
         void timer_Tick(object sender, EventArgs e)
         {
 
             //Uart_Communication.Read_UART(communication_running, serialPort1, 11, textBox2, textBox5,ref data_received,ref ACK_received);
             textBox2.Text = data_received[0].ToString();
             textBox5.Text = data_received[1].ToString();
+            if(ACK_check.Wait_for_ACK == 1)
+            {
+                ACK_check.Timeout++;
+                if (ACK_check.Timeout > 2)
+                {
+                    serialPort1.Write(ACK_check.Previous_Cmd, 0, ACK_check.Previous_Cmd.Length);
+                }
+            }
+            else
+            {
+                ACK_check.Timeout = 0;
+            }
+            /*
             if (ACK_received == 1)
             {
                 textBox3.Text = "ACK_received";
@@ -60,8 +74,8 @@ namespace Serial
             else
             {
                 textBox3.Text = "";
-            }
-        }
+            }*/
+        } // Callback every 1 second
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
@@ -91,41 +105,45 @@ namespace Serial
                     button4.Enabled = true;
                     button2.Enabled = true;
                     button5.Enabled = true;
+                    button6.Enabled = true;
                 }
             }
             catch (UnauthorizedAccessException)
             {
                 textBox2.Text = "Unauthorized Access";
             }
-        }
+        } //Open port button
 
         private void label1_Click(object sender, EventArgs e)
         {
 
-        }
+        } // No operation
 
         private void button4_Click(object sender, EventArgs e)
         {
             serialPort1.Close();
             progressBar1.Value = 0;
             button1.Enabled = false;
+            button2.Enabled = false;
             button3.Enabled = true;
             button4.Enabled = false;
+            button5.Enabled = false;
+            button6.Enabled = false;
             textBox1.Enabled = false;
             textBox4.Enabled = false;
             textBox6.Enabled = false;
             communication_running = 0;
-        }
+        } // Close port button
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
-        }
+        } // No operation
 
         private void button1_Click(object sender, EventArgs e)
         {
             textBox1.Text = "";
-        }
+        } // No operation
 
         /*private void button2_Click(object sender, EventArgs e)
         {
@@ -143,108 +161,156 @@ namespace Serial
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
 
-        }
+        } // No operation
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
 
-        }
+        } // No operation 
 
         private void textBox5_TextChanged(object sender, EventArgs e)
         {
 
-        }
+        } // No operation 
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
 
-        }
+        } // No operation 
 
         private void label4_Click(object sender, EventArgs e)
         {
 
-        }
+        } // No operation 
 
         private void label5_Click(object sender, EventArgs e)
         {
 
-        }
+        } // No operation 
 
         private void groupBox3_Enter(object sender, EventArgs e)
         {
 
-        }
+        }  // No operation 
 
-        private void button6_Click(object sender, EventArgs e)
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            Uart_Communication.Send_UART(communication_running, "Run", serialPort1, new byte[2]);
+            this.button2.Enabled = false;
+            this.button5.Enabled = false;
+            this.button6.Enabled = false;
+        } // Run button
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Uart_Communication.Send_UART(communication_running, "Stop", serialPort1, new byte[2]);
+            this.button2.Enabled = false;
+            this.button5.Enabled = false;
+            this.button6.Enabled = false;
+        } // Stop button
+
+        private void button6_Click(object sender, EventArgs e) 
         {
             double temperature_set;
             Byte[] temperature_set_byte;
             try
             {
                 temperature_set = Convert.ToDouble(textBox4.Text);
-                temperature_set_byte = new Byte[] { SHT30.Encode_temperature(temperature_set)[0], SHT30.Encode_temperature(temperature_set)[1] };
-                Uart_Communication.Send_UART(communication_running, "Set_temp", serialPort1, new Byte[] { temperature_set_byte[0], temperature_set_byte[1] });
-                textBox6.Text = "No error";
+                if(temperature_set>-45 & temperature_set < 130 )
+                {
+                    temperature_set_byte = new Byte[] { SHT30.Encode_temperature(temperature_set)[0], SHT30.Encode_temperature(temperature_set)[1] };
+                    Uart_Communication.Send_UART(communication_running, "Set_temp", serialPort1, new Byte[] { temperature_set_byte[0], temperature_set_byte[1] });
+                    textBox6.Text = "No error";
+                    this.button2.Enabled = false;
+                    this.button5.Enabled = false;
+                    this.button6.Enabled = false;
+                }    
+                else
+                {
+                    textBox6.Text = "Out of set range (-45°C -> 130°C)";
+                }
             }
             catch(Exception exeption)
             {
                 textBox6.Text = exeption.Message;
             }    
-        }
-
-        private void button2_Click_1(object sender, EventArgs e)
-        {
-            Uart_Communication.Send_UART(communication_running, "Run", serialPort1, new byte[2]);
-        }
+        }   // Set button
 
         private void button7_Click(object sender, EventArgs e)
         {
-            double test_db = (double) ACK_received;
-            textBox3.Text = test_db.ToString();
-        }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-            Uart_Communication.Send_UART(communication_running, "Stop", serialPort1, new byte[2]);
-        }
+        } //Test button
 
         private void textBox4_TextChanged_1(object sender, EventArgs e)
         {
 
-        }
+        } // No operation 
 
         public void DataReceivedHandler(
                         object sender,
                         SerialDataReceivedEventArgs e)
         {
-            Uart_Communication.Read_UART(communication_running, serialPort1, 11, ref data_received, ref ACK_received);
-        }
+            Uart_Communication.Read_UART(communication_running, serialPort1, 11, ref data_received, ref ACK_check.ACK_received);
+            if (ACK_check.ACK_received ==1 )
+            {
+                ACK_check.Wait_for_ACK = 0;
+                SetText("ACK_received");
+                EnableControlButton();
+            }
+            else
+            {
+                SetText("");
+            }
+        }  // UART Received callback
 
-        delegate void SetTextCallback(string text);
+        delegate void SetTextCallback(string text); // Safely cross-threading modify
 
         private void SetText(string text)
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
-            if (this.textBox1.InvokeRequired)
+            if (this.textBox3.InvokeRequired)
             {
                 SetTextCallback d = new SetTextCallback(SetText);
                 this.Invoke(d, new object[] { text });
             }
             else
             {
-                this.textBox1.Text = text;
+                this.textBox3.Text = text;
             }
-        }
+        } // Print "ACK received" when received ACK
+
+        delegate void EnableControlButtonsCallback(); // Safely cross-threading modify
+
+        private void EnableControlButton()
+        {
+            if (this.button2.InvokeRequired)
+            {
+                EnableControlButtonsCallback d = new EnableControlButtonsCallback(EnableControlButton);
+                this.Invoke(d);
+            }
+            else
+            {
+                this.button2.Enabled = true;
+                this.button5.Enabled = true;
+                this.button6.Enabled = true;
+            }
+        }  // Enable control buttons when receive ACK
 
         private void textBox3_TextChanged_1(object sender, EventArgs e)
         {
 
-        }
+        } //No operation
+    } // Form control class
+
+    public static class ACK_check
+    {
+        public static UInt16 ACK_received;
+        public static UInt16 Wait_for_ACK;
+        public static Byte[] Previous_Cmd;
+        public static UInt16 Timeout = 0;
     }
-
-
 
     public class Uart_Communication
     {
@@ -333,16 +399,22 @@ namespace Serial
             if (Command == "Run")
             {
                 Byte[] run_cmd = new Byte[] { STX[0], STX[1], 0x52, 0xff, 0xff, 0xff, ETX[0], ETX[1] };
+                ACK_check.Previous_Cmd = run_cmd;
+                ACK_check.Wait_for_ACK = 1;
                 serialPort1.Write(run_cmd, 0, run_cmd.Length);
             }
             if (Command == "Stop")
             {
                 Byte[] stop_cmd = new Byte[] { STX[0], STX[1], 0x50, 0xff, 0xff, 0xff, ETX[0], ETX[1] };
+                ACK_check.Previous_Cmd = stop_cmd;
+                ACK_check.Wait_for_ACK = 1;
                 serialPort1.Write(stop_cmd, 0, stop_cmd.Length);
             }
             if (Command == "Set_temp")
             {   Byte crc_8 = crc.crc8(Temperature_byte, 2);
                 Byte[] Set_temp_cmd = new Byte[] { STX[0], STX[1], 0x54, Temperature_byte[0], Temperature_byte[1], crc_8, ETX[0], ETX[1] };
+                ACK_check.Previous_Cmd = Set_temp_cmd;
+                ACK_check.Wait_for_ACK = 1;
                 serialPort1.Write(Set_temp_cmd, 0, Set_temp_cmd.Length);
             }
         }
@@ -392,17 +464,17 @@ namespace Serial
             }
         }
 
-    }
+    }  //UART comunication functions
 
     public static class crc
     {
         public static byte[] test_1 = new byte[] { 0x72, 0x23 };
 
-        public static Byte crc8(Byte[] data, uint len)
+        public static Byte crc8(Byte[] data, uint len) 
         {
-            const uint POLYNOMIAL = 0x31;
-            const uint constant_1 = 0x80;
-            uint crc = 0xFF;
+            const uint POLYNOMIAL = 0x31; // Polynomial of crc
+            const uint constant_1 = 0x80; // Check for MSB
+            uint crc = 0xFF; //Initial crc value
             uint k = 0;
             for (uint j = len; j > 0; --j)
             {
@@ -420,10 +492,9 @@ namespace Serial
                         crc = (crc << 1) ^ POLYNOMIAL;
                 }
             }
-            return (Byte)crc;
+            return (Byte)crc; //Final XOR = 0x00
         } //Calculate and return crc in Byte
-    }
-
+    } // Calculate CRC
 
     public class SHT30
     {
@@ -433,7 +504,7 @@ namespace Serial
             Temperature_byte_read[0] = Receive[2];
             Temperature_byte_read[1] = Receive[3];
             return (175 * ((double)Temperature_byte_read[0] * 256 + (double)Temperature_byte_read[1]) / 65535 - 45);
-        }
+        } // Calculate temperature from 2 encoded bytes
 
         public static double Calculate_humidity(Byte[] Receive)
         {   
@@ -441,7 +512,7 @@ namespace Serial
             Humidity_byte_read[0] = Receive[5];
             Humidity_byte_read[1] = Receive[6];
             return (100 * ((double)Humidity_byte_read[0] * 256 + (double)Humidity_byte_read[1]) / 65535);
-        }
+        } // Calculate humidity from 2 encoded bytes
 
         public static Byte[] Encode_temperature(Double temperature)
         {
@@ -449,7 +520,7 @@ namespace Serial
             temperature_byte[0] = (Byte) (uint)(65535*(temperature+45)/(175*256));
             temperature_byte[1] = (Byte)(((uint)(65535 * (temperature + 45) / 175)) - 256 * (uint)temperature_byte[0]);
             return (temperature_byte);
-        }
+        } // Encode temperature to 2 bytes
 
         public static Byte[] Encode_humidity(Double humidity)
         {
@@ -457,6 +528,6 @@ namespace Serial
             humidity_byte[0] = (Byte)(uint)(65535 * humidity / (100 * 256));
             humidity_byte[1] = (Byte)(((uint)(65535 * humidity / 100)) - 256 * (uint)humidity_byte[0]);
             return (humidity_byte);
-        }
+        } // Encode temperature to 2 bytes
     }    
 }

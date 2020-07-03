@@ -5,16 +5,20 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serial", "Serial\Serial.csproj", "{A504D6AA-07EE-415D-A54B-CE9DC80DFF57}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{6FBA8072-C3BB-4AEC-9F81-E2EBB3E8C4C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A504D6AA-07EE-415D-A54B-CE9DC80DFF57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A504D6AA-07EE-415D-A54B-CE9DC80DFF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A504D6AA-07EE-415D-A54B-CE9DC80DFF57}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{A504D6AA-07EE-415D-A54B-CE9DC80DFF57}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{A504D6AA-07EE-415D-A54B-CE9DC80DFF57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A504D6AA-07EE-415D-A54B-CE9DC80DFF57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FBA8072-C3BB-4AEC-9F81-E2EBB3E8C4C7}.Debug|Any CPU.ActiveCfg = Debug
+		{6FBA8072-C3BB-4AEC-9F81-E2EBB3E8C4C7}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
