@@ -50,6 +50,7 @@ namespace Serial
             timer.Tick += new EventHandler(timer_Tick);
             timer.Enabled = true;
         }  // Init 1s timer for UI update
+
         void timer_Tick(object sender, EventArgs e)
         {
 
@@ -79,11 +80,6 @@ namespace Serial
             }*/
         } // Callback every 1 second
 
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
             try
@@ -99,8 +95,6 @@ namespace Serial
                     serialPort1.Open();
                     progressBar1.Value = 100;
                     communication_running = 1;
-                    button1.Enabled = true;
-                    textBox1.Enabled = true;
                     textBox4.Enabled = true;
                     textBox6.Enabled = true;
                     button3.Enabled = false;
@@ -125,40 +119,15 @@ namespace Serial
         {
             serialPort1.Close();
             progressBar1.Value = 0;
-            button1.Enabled = false;
             button2.Enabled = false;
             button3.Enabled = true;
             button4.Enabled = false;
             button5.Enabled = false;
             button6.Enabled = false;
-            textBox1.Enabled = false;
             textBox4.Enabled = false;
             textBox6.Enabled = false;
             communication_running = 0;
         } // Close port button
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        } // No operation
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "";
-        } // No operation
-
-        /*private void button2_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                textBox2.Text = serialPort1.ReadExisting();
-
-            }
-            catch (TimeoutException)
-            {
-                textBox2.Text = "Timeout Exception";
-            }
-        }*/
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
@@ -241,11 +210,6 @@ namespace Serial
                 textBox6.Text = exeption.Message;
             }    
         }   // Set button
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-
-        } //Test button
 
         private void textBox4_TextChanged_1(object sender, EventArgs e)
         {
