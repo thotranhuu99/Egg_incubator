@@ -487,6 +487,8 @@ namespace Serial
             if(e.KeyCode == Keys.Enter)
             {
                 Set_Button_Click(this, new EventArgs());
+                e.Handled = true;
+                e.SuppressKeyPress = true;
             }    
         }
     } // Form control class

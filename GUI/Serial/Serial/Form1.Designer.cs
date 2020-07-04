@@ -403,7 +403,7 @@
             // 
             // Clear_graph
             // 
-            this.Clear_graph.Location = new System.Drawing.Point(28, 48);
+            this.Clear_graph.Location = new System.Drawing.Point(28, 133);
             this.Clear_graph.Name = "Clear_graph";
             this.Clear_graph.Size = new System.Drawing.Size(75, 23);
             this.Clear_graph.TabIndex = 13;
@@ -431,7 +431,7 @@
             // Draw_Graph_Button
             // 
             this.Draw_Graph_Button.Enabled = false;
-            this.Draw_Graph_Button.Location = new System.Drawing.Point(28, 132);
+            this.Draw_Graph_Button.Location = new System.Drawing.Point(28, 48);
             this.Draw_Graph_Button.Name = "Draw_Graph_Button";
             this.Draw_Graph_Button.Size = new System.Drawing.Size(75, 23);
             this.Draw_Graph_Button.TabIndex = 15;
