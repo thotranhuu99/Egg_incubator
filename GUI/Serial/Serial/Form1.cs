@@ -11,6 +11,7 @@ using System.IO.Ports;
 using System.CodeDom.Compiler;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.CompilerServices;
+using ZedGraph;
 
 namespace Serial
 {
@@ -19,9 +20,11 @@ namespace Serial
         //Global Variable define begin
         int run = 0;
         int communication_running = 0;
-        //UInt16 ACK_received;
         double[] data_received = new double[2];
         double temperature_set = 50;
+        int TickStart = 0;
+        int Graph_mode = 1;
+        int First_transmission = 1;
 
         //Global Variable define end
         public Form1()
@@ -38,9 +41,70 @@ namespace Serial
         private void Form1_Load(object sender, EventArgs e)
         {
             Init_Timer();
+            Graph_Init();
+
             serialPort1.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 
         } //Run once when Form start
+
+        private void Graph_Init()
+        {
+            // Naming for temperature graph
+            GraphPane temperaturePane = zedGraphControl1.GraphPane;
+            temperaturePane.Title.Text = "Temperature graph";
+            temperaturePane.XAxis.Title.Text = "Time (s)";
+            temperaturePane.YAxis.Title.Text = "Temperature (°C)";
+            // Create new lines
+            RollingPointPairList list1 = new RollingPointPairList(6000);
+            RollingPointPairList list2 = new RollingPointPairList(6000);
+
+            LineItem curve1 = temperaturePane.AddCurve("Set value", list1, Color.Red, SymbolType.None);
+            LineItem curve2 = temperaturePane.AddCurve("Current value", list2, Color.Blue, SymbolType.None);
+            //Create scale for x axis
+            temperaturePane.XAxis.Scale.Min = 0;
+            temperaturePane.XAxis.Scale.Max = 50;
+            temperaturePane.XAxis.Scale.MinorStep = 1;
+            temperaturePane.XAxis.Scale.MajorStep = 5;
+            //Create scale for y axis
+            temperaturePane.YAxis.Scale.Min = 25;
+            temperaturePane.YAxis.Scale.Max = 55;
+            temperaturePane.YAxis.Scale.MinorStep = 0.2;
+            temperaturePane.YAxis.Scale.MajorStep = 1;
+            zedGraphControl1.AxisChange();
+
+            // Naming for humidity graph
+            GraphPane humidityPane = zedGraphControl2.GraphPane;
+            humidityPane.Title.Text = "Humidity graph";
+            humidityPane.XAxis.Title.Text = "Time (s)";
+            humidityPane.YAxis.Title.Text = "Humidity (%)";
+            // Create new lines
+            RollingPointPairList list3 = new RollingPointPairList(60000);
+
+            LineItem curve3 = humidityPane.AddCurve("Current value", list3, Color.Blue, SymbolType.None);
+            //Create scale for x axis
+            humidityPane.XAxis.Scale.Min = 0;
+            humidityPane.XAxis.Scale.Max = 50;
+            humidityPane.XAxis.Scale.MinorStep = 1;
+            humidityPane.XAxis.Scale.MajorStep = 5;
+            //Create scale for y axis
+            humidityPane.YAxis.Scale.Min = 60;
+            humidityPane.YAxis.Scale.Max = 80;
+            humidityPane.YAxis.Scale.MinorStep = 0.2;
+            humidityPane.YAxis.Scale.MajorStep = 1;
+
+            zedGraphControl2.AxisChange();
+        }
+
+        private void Graph_Clear()
+        {
+            zedGraphControl1.GraphPane.CurveList.Clear();
+            zedGraphControl1.GraphPane.GraphObjList.Clear();
+            zedGraphControl2.GraphPane.CurveList.Clear();
+            zedGraphControl2.GraphPane.GraphObjList.Clear();
+            zedGraphControl1.Refresh();
+            zedGraphControl2.Refresh();
+            Draw_Graph_Button.Enabled = true;
+        }
 
         private Timer timer = new Timer();
 
@@ -80,7 +144,87 @@ namespace Serial
             }*/
         } // Callback every 1 second
 
-        private void button3_Click(object sender, EventArgs e)
+        private void Draw_Temperature_Graph (double setpoint, double current)
+        {
+            // Create 1 curve
+            if (zedGraphControl1.GraphPane.CurveList.Count <= 0)
+                return;
+            // Create item curve in graph
+            LineItem curve1 = zedGraphControl1.GraphPane.CurveList[0] as LineItem;
+            LineItem curve2 = zedGraphControl1.GraphPane.CurveList[1] as LineItem;
+            ((LineItem)zedGraphControl1.GraphPane.CurveList[0]).Line.Width = 2.0F;
+            ((LineItem)zedGraphControl1.GraphPane.CurveList[1]).Line.Width = 2.0F;
+            if (curve1 == null)
+                return;
+            if (curve2 == null)
+                return;
+            // Get pointparlist
+            IPointListEdit list1 = curve1.Points as IPointListEdit;
+            IPointListEdit list2 = curve2.Points as IPointListEdit;
+
+            if (list1 == null)
+                return;
+            if (list2 == null)
+                return;
+            double time = (Environment.TickCount - TickStart) / 1000.0;
+            list1.Add(time, setpoint);
+            list2.Add(time, current);
+
+            Scale xScale = zedGraphControl1.GraphPane.XAxis.Scale;
+            if (time > xScale.Max - xScale.MajorStep)
+            {
+                if (Graph_mode == 1)
+                {
+                    xScale.Max = time + xScale.MajorStep;
+                    xScale.Min = xScale.Max - 50.0;
+                }
+                else
+                {
+                    xScale.Max = time + xScale.MajorStep;
+                    xScale.Min = 0;
+                }
+            }
+            zedGraphControl1.AxisChange();
+            zedGraphControl1.Invalidate();
+
+        }
+
+        private void Draw_Humidity_Graph(double current_humidity)
+        {
+            // Create 1 curve
+            if (zedGraphControl2.GraphPane.CurveList.Count <= 0)
+                return;
+            // Create item curve in graph
+            LineItem curve3 = zedGraphControl2.GraphPane.CurveList[0] as LineItem;
+            ((LineItem)zedGraphControl2.GraphPane.CurveList[0]).Line.Width = 2.0F;
+            if (curve3 == null)
+                return;
+            // Get pointpairlist
+            IPointListEdit list3 = curve3.Points as IPointListEdit;
+            if (list3 == null)
+                return;
+            double time = (Environment.TickCount - TickStart) / 1000.0;
+            list3.Add(time, current_humidity);
+
+            Scale xScale = zedGraphControl2.GraphPane.XAxis.Scale;
+            if (time > xScale.Max - xScale.MajorStep)
+            {
+                if (Graph_mode == 1)
+                {
+                    xScale.Max = time + xScale.MajorStep;
+                    xScale.Min = xScale.Max - 50.0;
+                }
+                else
+                {
+                    xScale.Max = time + xScale.MajorStep;
+                    xScale.Min = 0;
+                }
+            }
+            zedGraphControl2.AxisChange();
+            zedGraphControl2.Invalidate();
+        }
+
+        private void Open_Port_Button_Click(object sender, EventArgs e)
         {
             try
             {
@@ -97,11 +241,17 @@ namespace Serial
                     communication_running = 1;
                     textBox4.Enabled = true;
                     textBox6.Enabled = true;
-                    button3.Enabled = false;
-                    button4.Enabled = true;
-                    button2.Enabled = true;
-                    button5.Enabled = true;
-                    button6.Enabled = true;
+                    Open_Port_Button.Enabled = false;
+                    Close_Port_Button.Enabled = true;
+                    Run_Button.Enabled = true;
+                    Stop_Button.Enabled = true;
+                    Set_Button.Enabled = true;
+                    Draw_Graph_Button.Enabled = true;
+                    zedGraphControl1.GraphPane.CurveList.Clear();
+                    zedGraphControl1.GraphPane.GraphObjList.Clear();
+                    zedGraphControl2.GraphPane.CurveList.Clear();
+                    zedGraphControl2.GraphPane.GraphObjList.Clear();
+                    //TickStart = Environment.TickCount;
                 }
             }
             catch (UnauthorizedAccessException)
@@ -115,18 +265,19 @@ namespace Serial
 
         } // No operation
 
-        private void button4_Click(object sender, EventArgs e)
+        private void Close_Port_Button_Click(object sender, EventArgs e)
         {
             serialPort1.Close();
             progressBar1.Value = 0;
-            button2.Enabled = false;
-            button3.Enabled = true;
-            button4.Enabled = false;
-            button5.Enabled = false;
-            button6.Enabled = false;
+            Run_Button.Enabled = false;
+            Open_Port_Button.Enabled = true;
+            Close_Port_Button.Enabled = false;
+            Stop_Button.Enabled = false;
+            Set_Button.Enabled = false;
             textBox4.Enabled = false;
             textBox6.Enabled = false;
             communication_running = 0;
+            First_transmission = 0;
         } // Close port button
 
         private void textBox3_TextChanged(object sender, EventArgs e)
@@ -164,25 +315,25 @@ namespace Serial
 
         }  // No operation 
 
-        private void button2_Click_1(object sender, EventArgs e)
+        private void Run_Button_Click(object sender, EventArgs e)
         {
             run = 1;
             Uart_Communication.Send_UART(communication_running, "Run", serialPort1, new byte[2]);
-            this.button2.Enabled = false;
-            this.button5.Enabled = false;
-            this.button6.Enabled = false;
+            this.Run_Button.Enabled = false;
+            this.Stop_Button.Enabled = false;
+            this.Set_Button.Enabled = false;
         } // Run button
 
-        private void button5_Click(object sender, EventArgs e)
+        private void Stop_Button_Click(object sender, EventArgs e)
         {
             run = 0;
             Uart_Communication.Send_UART(communication_running, "Stop", serialPort1, new byte[2]);
-            this.button2.Enabled = false;
-            this.button5.Enabled = false;
-            this.button6.Enabled = false;
+            this.Run_Button.Enabled = false;
+            this.Stop_Button.Enabled = false;
+            this.Set_Button.Enabled = false;
         } // Stop button
 
-        private void button6_Click(object sender, EventArgs e) 
+        private void Set_Button_Click(object sender, EventArgs e) 
         {
             double temperature_set;
             Byte[] temperature_set_byte;
@@ -196,9 +347,9 @@ namespace Serial
                     temperature_set_byte = new Byte[] { SHT30.Encode_temperature(temperature_set)[0], SHT30.Encode_temperature(temperature_set)[1] };
                     Uart_Communication.Send_UART(communication_running, "Set_temp", serialPort1, new Byte[] { temperature_set_byte[0], temperature_set_byte[1] });
                     textBox6.Text = "No error";
-                    this.button2.Enabled = false;
-                    this.button5.Enabled = false;
-                    this.button6.Enabled = false;
+                    this.Run_Button.Enabled = false;
+                    this.Stop_Button.Enabled = false;
+                    this.Set_Button.Enabled = false;
                 }    
                 else
                 {
@@ -220,7 +371,7 @@ namespace Serial
                         object sender,
                         SerialDataReceivedEventArgs e)
         {
-            Uart_Communication.Read_UART(communication_running, serialPort1, 11, ref data_received, ref ACK_check.ACK_received);
+            Uart_Communication.Read_UART(communication_running, serialPort1, 11, ref data_received, ref ACK_check.ACK_received, ref First_transmission);
             if (ACK_check.ACK_received ==1 )
             {
                 ACK_check.Wait_for_ACK = 0;
@@ -255,7 +406,7 @@ namespace Serial
 
         private void EnableControlButton(int run)
         {
-            if (this.button2.InvokeRequired)
+            if (this.Run_Button.InvokeRequired)
             {
                 EnableControlButtonsCallback d = new EnableControlButtonsCallback(EnableControlButton);
                 this.Invoke(d, new object[] { run });
@@ -264,15 +415,15 @@ namespace Serial
             {
                 if (run ==0)
                 {
-                    this.button2.Enabled = true;
-                    this.button5.Enabled = false;
-                    this.button6.Enabled = true;
+                    this.Run_Button.Enabled = true;
+                    this.Stop_Button.Enabled = false;
+                    this.Set_Button.Enabled = true;
                 }
                 else
                 {
-                    this.button2.Enabled = false;
-                    this.button5.Enabled = true;
-                    this.button6.Enabled = true;
+                    this.Run_Button.Enabled = false;
+                    this.Stop_Button.Enabled = true;
+                    this.Set_Button.Enabled = true;
                 }
 
               
@@ -283,6 +434,51 @@ namespace Serial
         {
 
         } //No operation
+
+        private void Scoll_Compact_Mode_Button_Click(object sender, EventArgs e)
+        {
+            if (pbMode.Text == "SCROLL")
+            {
+                Graph_mode = 1;
+                pbMode.Text = "COMPACT";
+            }
+            else
+            {
+                Graph_mode = 0;
+                pbMode.Text = "SCROLL";
+            }
+        }
+
+        private void Clear_Graph_Button_Click(object sender, EventArgs e)
+        {
+            Graph_Clear();
+        }
+
+        private void zedGraphControl2_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Draw_Graph_Button_Click(object sender, EventArgs e)
+        {
+            Graph_Clear();
+            Graph_Init();
+            TickStart = Environment.TickCount;
+            Draw_Graph_Button.Enabled = false;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (serialPort1.IsOpen)
+            {
+                if (First_transmission == 0)
+                {
+                    Draw_Temperature_Graph(temperature_set, data_received[0]);
+                    Draw_Humidity_Graph(data_received[1]);
+                }       
+            }
+            
+        }
     } // Form control class
 
     public static class ACK_check
@@ -298,7 +494,7 @@ namespace Serial
 
         public static Byte[] Receive = new Byte[6];
 
-        public static int Read_UART(int communication_running, SerialPort serialPort1, int len, ref double[] Data_received,ref UInt16 ACK_received )
+        public static int Read_UART(int communication_running, SerialPort serialPort1, int len, ref double[] Data_received, ref UInt16 ACK_received, ref int First_transmission)
         {
             int header_detected = 0;
             int error = 1;
@@ -343,6 +539,7 @@ namespace Serial
                             Data_received[1] = humidity_read;
                             //textBox_temperature.Text = temperature_read.ToString();
                             //textBox_humidity.Text = humidity_read.ToString();
+                            First_transmission = 0;
                             return 1;
                         }
                     }
