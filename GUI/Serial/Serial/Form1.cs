@@ -365,7 +365,9 @@ namespace Serial
         private void textBox4_TextChanged_1(object sender, EventArgs e)
         {
 
-        } // No operation 
+        } // No operation
+        
+        
 
         public void DataReceivedHandler(
                         object sender,
@@ -478,6 +480,14 @@ namespace Serial
                 }       
             }
             
+        }
+
+        private void textBox4_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                Set_Button_Click(this, new EventArgs());
+            }    
         }
     } // Form control class
 
