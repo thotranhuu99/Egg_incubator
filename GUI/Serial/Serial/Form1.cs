@@ -55,8 +55,8 @@ namespace Serial
             temperaturePane.XAxis.Title.Text = "Time (s)";
             temperaturePane.YAxis.Title.Text = "Temperature (°C)";
             // Create new lines
-            RollingPointPairList list1 = new RollingPointPairList(6000);
-            RollingPointPairList list2 = new RollingPointPairList(6000);
+            RollingPointPairList list1 = new RollingPointPairList(60000);
+            RollingPointPairList list2 = new RollingPointPairList(60000);
 
             LineItem curve1 = temperaturePane.AddCurve("Set value", list1, Color.Red, SymbolType.None);
             LineItem curve2 = temperaturePane.AddCurve("Current value", list2, Color.Blue, SymbolType.None);
@@ -87,7 +87,7 @@ namespace Serial
             humidityPane.XAxis.Scale.MinorStep = 1;
             humidityPane.XAxis.Scale.MajorStep = 5;
             //Create scale for y axis
-            humidityPane.YAxis.Scale.Min = 60;
+            humidityPane.YAxis.Scale.Min = 50;
             humidityPane.YAxis.Scale.Max = 80;
             humidityPane.YAxis.Scale.MinorStep = 0.2;
             humidityPane.YAxis.Scale.MajorStep = 1;
@@ -126,7 +126,11 @@ namespace Serial
                 ACK_check.Timeout++;
                 if (ACK_check.Timeout > 2)
                 {
-                    serialPort1.Write(ACK_check.Previous_Cmd, 0, ACK_check.Previous_Cmd.Length);
+                    if (serialPort1.IsOpen)
+                    {
+                        serialPort1.Write(ACK_check.Previous_Cmd, 0, ACK_check.Previous_Cmd.Length);
+                    }    
+                    
                 }
             }
             else
@@ -477,7 +481,12 @@ namespace Serial
                 {
                     Draw_Temperature_Graph(temperature_set, data_received[0]);
                     Draw_Humidity_Graph(data_received[1]);
-                }       
+                    Measured_Value_Error_Textbox.Text = "Receiving measured values";
+                }
+                else
+                {
+                    Measured_Value_Error_Textbox.Text = "Waiting for first valid transmission";
+                }    
             }
             
         }
@@ -490,6 +499,11 @@ namespace Serial
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }    
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
         }
     } // Form control class
 
@@ -523,8 +537,15 @@ namespace Serial
                 int[] header_dectect_byte = new int[2];
                 for (int i = 0; i < 1; i++)
                 {
-                    header_dectect_byte[0] = serialPort1.ReadByte();
-                    header_dectect_byte[1] = serialPort1.ReadByte();        
+                    try
+                    {
+                        header_dectect_byte[0] = serialPort1.ReadByte();
+                        header_dectect_byte[1] = serialPort1.ReadByte();
+                    }
+                    catch(Exception exeption)
+                    {
+                        ;
+                    }
                     header_detected = header_dectect(header_dectect_byte, STX);
                     if (header_detected == 1)
                     {
@@ -532,19 +553,26 @@ namespace Serial
                         Receive_byte[1] = (Byte)header_dectect_byte[1];
                         for (int j = 0; j < len - 2; j++)
                         {
-                            Receive_byte[j + 2] = (Byte)serialPort1.ReadByte();
+                            try 
+                            {
+                                Receive_byte[j + 2] = (Byte)serialPort1.ReadByte();
+                            }
+                            catch (Exception exeption)
+                            {
+                                ;
+                            }
+                        }
+                        if (Receive_byte[len - 3] == 0x2B)
+                        {
+                            ACK_received = 1;
+                        }
+                        else
+                        {
+                            ACK_received = 0;
                         }
                         error = check_frame(Receive_byte, new byte[] { (Byte)STX[0], (Byte)STX[1] }, ETX, ACK, not_ACK, 11);
                         if (error == 0)
                         {
-                            if (Receive_byte[len-3] == 0x2B)
-                            {
-                                ACK_received = 1;
-                            }
-                            else
-                            {
-                                ACK_received = 0;
-                            }
                             temperature_read = SHT30.Calculate_temperature(Receive_byte);
                             humidity_read = SHT30.Calculate_humidity(Receive_byte);
                             Data_received[0] = temperature_read;
