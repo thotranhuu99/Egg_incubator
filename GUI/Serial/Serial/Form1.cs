@@ -281,7 +281,7 @@ namespace Serial
             textBox4.Enabled = false;
             textBox6.Enabled = false;
             communication_running = 0;
-            First_transmission = 0;
+            First_transmission = 1;
         } // Close port button
 
         private void textBox3_TextChanged(object sender, EventArgs e)
@@ -502,6 +502,11 @@ namespace Serial
         }
 
         private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Measured_Value_Error_Textbox_TextChanged(object sender, EventArgs e)
         {
 
         }

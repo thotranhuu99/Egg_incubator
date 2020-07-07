@@ -36,6 +36,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.Measured_Value_Error_Textbox = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -65,8 +67,6 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Draw_Graph_Button = new System.Windows.Forms.Button();
-            this.Measured_Value_Error_Textbox = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -132,6 +132,26 @@
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Measured_value";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 168);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(88, 13);
+            this.label9.TabIndex = 17;
+            this.label9.Text = "Status message :";
+            this.label9.Click += new System.EventHandler(this.label9_Click);
+            // 
+            // Measured_Value_Error_Textbox
+            // 
+            this.Measured_Value_Error_Textbox.Location = new System.Drawing.Point(100, 156);
+            this.Measured_Value_Error_Textbox.Multiline = true;
+            this.Measured_Value_Error_Textbox.Name = "Measured_Value_Error_Textbox";
+            this.Measured_Value_Error_Textbox.ReadOnly = true;
+            this.Measured_Value_Error_Textbox.Size = new System.Drawing.Size(119, 34);
+            this.Measured_Value_Error_Textbox.TabIndex = 5;
+            this.Measured_Value_Error_Textbox.TextChanged += new System.EventHandler(this.Measured_Value_Error_Textbox_TextChanged);
             // 
             // comboBox1
             // 
@@ -442,25 +462,6 @@
             this.Draw_Graph_Button.Text = "Draw Graph";
             this.Draw_Graph_Button.UseVisualStyleBackColor = true;
             this.Draw_Graph_Button.Click += new System.EventHandler(this.Draw_Graph_Button_Click);
-            // 
-            // Measured_Value_Error_Textbox
-            // 
-            this.Measured_Value_Error_Textbox.Location = new System.Drawing.Point(100, 156);
-            this.Measured_Value_Error_Textbox.Multiline = true;
-            this.Measured_Value_Error_Textbox.Name = "Measured_Value_Error_Textbox";
-            this.Measured_Value_Error_Textbox.ReadOnly = true;
-            this.Measured_Value_Error_Textbox.Size = new System.Drawing.Size(119, 34);
-            this.Measured_Value_Error_Textbox.TabIndex = 5;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 168);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(88, 13);
-            this.label9.TabIndex = 17;
-            this.label9.Text = "Status message :";
-            this.label9.Click += new System.EventHandler(this.label9_Click);
             // 
             // Form1
             // 

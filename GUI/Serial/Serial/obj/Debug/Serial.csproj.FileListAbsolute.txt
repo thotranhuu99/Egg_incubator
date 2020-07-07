@@ -28,4 +28,3 @@ C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Debug\MindFusion.Licensing.dl
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Debug\MindFusion.Svg.dll
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Debug\MindFusion.UI.WinForms.dll
 C:\Users\thotr\Project_nhung\GUI\Serial\Serial\bin\Debug\MindFusion.UI.WinForms.xml
-C:\Users\thotr\Project_nhung\GUI\Serial\Serial\obj\Debug\Serial.csprojAssemblyReference.cache
