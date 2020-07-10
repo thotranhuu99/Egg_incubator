@@ -217,11 +217,11 @@ void control_on_off(uint8_t run,double temperature, double temperature_set)
 {
 	if (run == 1)
 	{
-		if (temperature_set > temperature)
+		if ((temperature_set - 0.1) > temperature) //-deadband
 		{
 			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
 		}
-		else
+		if ((temperature_set) < temperature) //+deadband
 		{
 			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
 		}
