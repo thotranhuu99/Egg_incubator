@@ -66,13 +66,14 @@ uint8_t test[2] = {0x21, 0x25};
 uint8_t Send_UART[11];
 uint8_t Received_UART[8];
 uint32_t count;
-double temperature;
-double temperature_pre;
+double temperature = 100;
+double temperature_pre =100;
 double humidity;
 double humidity_pre;
 double temperature_set = 50;
-uint8_t run;
+uint8_t run = 0;
 uint8_t Receive_error;
+uint8_t auto_mode =1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -148,8 +149,8 @@ void SHT30_check_connection(double temperature, double temperature_pre, double h
 	}
 	if( times > 4)
 	{
-		I2C_ReInit();
-		SHT30_initialize();
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+		HAL_NVIC_SystemReset();
 	}
 }
 
@@ -213,22 +214,36 @@ uint8_t Process_UART_received(uint8_t Receive_UART[8])
 		return(1);
 }
 
-void control_on_off(uint8_t run,double temperature, double temperature_set)
+void control_on_off(uint8_t auto_mode, uint8_t run, double temperature, double temperature_set)
 {
-	if (run == 1)
+	if (auto_mode == 0)
 	{
-		if ((temperature_set - 0.1) > temperature) //-deadband
+		if (run == 1)
 		{
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
+			if ((temperature_set - 0.1) > temperature) //-deadband
+			{
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
+			}
+			if ((temperature_set) < temperature) //+deadband
+			{
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+			}
 		}
-		if ((temperature_set) < temperature) //+deadband
+		else
 		{
 			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
 		}
 	}
-	else
+	if (auto_mode ==1)
 	{
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+		if ((temperature_set - 0.1) > temperature) //-deadband
+			{
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
+			}
+			if ((temperature_set) < temperature) //+deadband
+			{
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+			}
 	}
 }
 
@@ -244,7 +259,7 @@ void control_on_off(uint8_t run,double temperature, double temperature_set)
   * @retval int
   */
 int main(void)
-{
+                                                                            {
   /* USER CODE BEGIN 1 */
 	
   /* USER CODE END 1 */
@@ -297,7 +312,7 @@ int main(void)
 		Pack_data_to_send_UART(receive, ACK_to_send); //Save in Send_UART[10]
 		HAL_UART_Transmit_DMA(&huart5, Send_UART, 11);
 		ACK_to_send = 0;
-		control_on_off(run, temperature, temperature_set);
+		control_on_off(auto_mode, run, temperature, temperature_set);
 		//HAL_UART_Receive_DMA (&huart5, Received_UART, 8);
 		while(flag==1);
 		flag=1;
@@ -550,6 +565,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == huart5.Instance)
 	{
+		auto_mode = 0;
 		Receive_error = Process_UART_received(Received_UART);
 		if (Receive_error == 0)
 		{
