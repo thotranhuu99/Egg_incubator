@@ -71,6 +71,7 @@ double temperature_pre =100;
 double humidity;
 double humidity_pre;
 double temperature_set = 50;
+double temperature_max = 70;
 uint8_t run = 0;
 uint8_t Receive_error;
 uint8_t auto_mode =1;
@@ -153,16 +154,6 @@ void SHT30_check_connection(double temperature, double temperature_pre, double h
 		HAL_NVIC_SystemReset();
 	}
 }
-
-/*void i2c_deinit(i2c_t *obj)
-{
-  HAL_NVIC_DisableIRQ(obj->irq);
-#if !defined(STM32F0xx) && !defined(STM32L0xx)
-  HAL_NVIC_DisableIRQ(obj->irqER);
-#endif // !defined(STM32F0xx) && !defined(STM32L0xx)
-  HAL_I2C_DeInit(&(obj->handle));
-}*/
-
 void Pack_data_to_send_UART(uint8_t *receive, uint8_t ACK_send)
 {
 	Send_UART[0]=0x53;// STX[1] (character S)
@@ -216,37 +207,44 @@ uint8_t Process_UART_received(uint8_t Receive_UART[8])
 
 void control_on_off(uint8_t auto_mode, uint8_t run, double temperature, double temperature_set)
 {
-	if (auto_mode == 0)
+	if (temperature < temperature_max)
 	{
-		if (run == 1)
-		{
-			if ((temperature_set - 0.1) > temperature) //-deadband
+			if (auto_mode == 0)
 			{
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
+				if (run == 1)
+				{
+					if ((temperature_set - 0.1) > temperature) //-deadband
+					{
+						HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
+					}
+					if ((temperature_set) < temperature) //+deadband
+					{
+						HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+					}
+				}
+				else
+				{
+					HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+				}
 			}
-			if ((temperature_set) < temperature) //+deadband
+			if (auto_mode ==1)
 			{
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+				if ((temperature_set - 0.1) > temperature) //-deadband
+				{
+					HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
+				}
+				if ((temperature_set) < temperature) //+deadband
+				{
+					HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+				}
 			}
-		}
-		else
-		{
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
-		}
+
 	}
-	if (auto_mode ==1)
+	if (temperature >= temperature_max)
 	{
-		if ((temperature_set - 0.1) > temperature) //-deadband
-			{
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
-			}
-			if ((temperature_set) < temperature) //+deadband
-			{
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
-			}
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
 	}
 }
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
