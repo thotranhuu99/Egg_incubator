@@ -344,7 +344,6 @@ namespace Serial
             try
             {
                 temperature_set = Convert.ToDouble(textBox4.Text);
-
                 if(temperature_set>-45 & temperature_set < 130 )
                 {
                     this.temperature_set = temperature_set;
