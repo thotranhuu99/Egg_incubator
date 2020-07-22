@@ -11,9 +11,11 @@ From PC to STM32F407:
    3 ) Command set temperature:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/Frame_4.png" width="600">  
 II. Graphic user interface:  
-  1 ) Temperature graph:  
+  1 ) Designed GUI:  
+<img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/Default_GUI.PNG" width="800">  
+  2 ) Temperature graph:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI.png" width="800">  
-  2 ) Humidity graph:  
+  3 ) Humidity graph:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI_1.png" width="800"> 
 
   
