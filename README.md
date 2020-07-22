@@ -13,7 +13,7 @@ From PC to STM32F407:
 II. Graphic user interface:  
 1) Temperature graph:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI.png" width="600">  
-2) Humidity graph:  
+  2) Humidity graph:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI_1.png" width="600"> 
 
   
