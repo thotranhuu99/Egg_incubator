@@ -16,8 +16,8 @@ From PC to STM32F407:
   1 ) Designed GUI:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/Default_GUI.PNG" width="800">  
   2 ) Temperature graph:  
-<img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI.png" width="800">  
-<img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI_1.png" width="800">  
+<img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI.png" width="500">  
+<img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI_1.png" width="500">  
 
 
   
