@@ -15,6 +15,8 @@ II. Graphic user interface:
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/Default_GUI.PNG" width="800">  
   2 ) Temperature graph:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI.png" width="800">  
-<img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI_1.png" width="800"> 
+<img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/GUI_1.png" width="800">  
+  3 ) Hardware implementation:  
+  <img src="https://github.com/thotranhuu99/Egg_incubator/blob/master/Images/Hardware.jpg" width="800">
 
   
