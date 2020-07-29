@@ -1,8 +1,8 @@
-I. Hardware implementation:    
+**I. Hardware implementation:  **
  <img src="https://github.com/thotranhuu99/Egg_incubator/blob/master/Images/Hardware.jpg" width="800">  
 II. Data decode formulas:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/Formulas.png">  
-III. Transmission frames:  
+**III. Transmission frames:  **
 From STM32F407 to PC:  
 <img src="https://github.com/thotranhuu99/SHT30/blob/master/Images/Frame_1.png" width="600">  
 From PC to STM32F407:  
