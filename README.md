@@ -18,6 +18,10 @@ From PC to STM32F407:
   2 ) Temperature graph:  
 <img src="https://github.com/thotranhuu99/Egg_incubator/blob/master/GUI_Images/GUI.png" width="500">  
 <img src="https://github.com/thotranhuu99/Egg_incubator/blob/master/GUI_Images/GUI_1.png" width="500">  
-
-
+**IV. Simulink control impementation:**  
+<img src="https://github.com/thotranhuu99/Egg_incubator/blob/master/Simulink_Images/Simulink_model.PNG" width="500">  
+  1 ) Temperature scope:  
+    <img src="https://github.com/thotranhuu99/Egg_incubator/blob/master/Simulink_Images/Temperature_scope.PNG" width="500">
+   2 ) Humidity scope:  
+   <img src="https://github.com/thotranhuu99/Egg_incubator/blob/master/Simulink_Images/Humidity_scope.PNG" width="500">
   
