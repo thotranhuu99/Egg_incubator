@@ -8,94 +8,52 @@
   </ConfigDictionary>
   <Desktop>
     <Static>
+      <Workspace>
+        <ColumnWidths>
+          <Column0>124</Column0>
+          <Column1>27</Column1>
+          <Column2>27</Column2>
+          <Column3>27</Column3>
+        </ColumnWidths>
+      </Workspace>
       <Build>
         <ColumnWidth0>20</ColumnWidth0>
         <ColumnWidth1>980</ColumnWidth1>
         <ColumnWidth2>261</ColumnWidth2>
         <ColumnWidth3>65</ColumnWidth3>
       </Build>
-      <Workspace>
-        <ColumnWidths>
-          <Column0>312</Column0>
-          <Column1>27</Column1>
-          <Column2>27</Column2>
-          <Column3>27</Column3>
-        </ColumnWidths>
-      </Workspace>
       <TerminalIO/>
-      <PROJECT_GUI_CALL_GRAPH>
-        <PreferedWindows>
-          <Position>3</Position>
-          <ScreenPosX>0</ScreenPosX>
-          <ScreenPosY>0</ScreenPosY>
-          <Windows/>
-        </PreferedWindows>
-        <col-names>
-          <item>File</item>
-          <item>Function</item>
-          <item>Line</item>
-        </col-names>
-        <col-widths>
-          <item>200</item>
-          <item>700</item>
-          <item>100</item>
-        </col-widths>
-      </PROJECT_GUI_CALL_GRAPH>
-      <Select-Ambiguous-Definitions>
-        <ColumnWidth0>470</ColumnWidth0>
-        <ColumnWidth1>67</ColumnWidth1>
-        <ColumnWidth2>806</ColumnWidth2>
-      </Select-Ambiguous-Definitions>
     </Static>
     <Windows>
-      <Wnd2>
+      <Wnd0>
         <Tabs>
           <Tab>
-            <Identity>TabID-1353-29699</Identity>
-            <TabName>Build</TabName>
-            <Factory>Build</Factory>
-            <Session/>
-          </Tab>
-          <Tab>
-            <Identity>TabID-21243-23986</Identity>
-            <TabName>Ambiguous Definitions</TabName>
-            <Factory>Select-Ambiguous-Definitions</Factory>
-            <Session/>
-          </Tab>
-        </Tabs>
-        <SelectedTab>0</SelectedTab>
-      </Wnd2>
-      <Wnd3>
-        <Tabs>
-          <Tab>
-            <Identity>TabID-12101-29702</Identity>
+            <Identity>TabID-15295-32249</Identity>
             <TabName>Workspace</TabName>
             <Factory>Workspace</Factory>
             <Session>
               <NodeDict>
                 <ExpandedNode>Egg_incubator</ExpandedNode>
-                <ExpandedNode>Egg_incubator/spl</ExpandedNode>
               </NodeDict>
             </Session>
           </Tab>
         </Tabs>
         <SelectedTab>0</SelectedTab>
-      </Wnd3>
+      </Wnd0>
+      <Wnd1>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-30519-32373</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        <SelectedTab>0</SelectedTab>
+      </Wnd1>
     </Windows>
     <Editor>
       <Pane>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\STM8S_StdPeriph_Driver\src\stm8s_tim1.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>62</YPos2>
-          <SelStart2>4932</SelStart2>
-          <SelEnd2>4932</SelEnd2>
-        </Tab>
         <Tab>
           <Factory>TextEditor</Factory>
           <Filename>$WS_DIR$\main.c</Filename>
@@ -104,47 +62,11 @@
           <SelStart>0</SelStart>
           <SelEnd>0</SelEnd>
           <XPos2>0</XPos2>
-          <YPos2>55</YPos2>
-          <SelStart2>2436</SelStart2>
-          <SelEnd2>2436</SelEnd2>
+          <YPos2>0</YPos2>
+          <SelStart2>0</SelStart2>
+          <SelEnd2>0</SelEnd2>
         </Tab>
-        <ActiveTab>1</ActiveTab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\STM8S_StdPeriph_Driver\inc\stm8s_tim1.h</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>100</YPos2>
-          <SelStart2>4090</SelStart2>
-          <SelEnd2>4109</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\STM8S_StdPeriph_Driver\src\stm8s_itc.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>226</YPos2>
-          <SelStart2>10773</SelStart2>
-          <SelEnd2>10773</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\STM8S_StdPeriph_Driver\inc\stm8s.h</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>2657</YPos2>
-          <SelStart2>109928</SelStart2>
-          <SelEnd2>109930</SelEnd2>
-        </Tab>
+        <ActiveTab>0</ActiveTab>
       </Pane>
       <ActivePane>0</ActivePane>
       <Sizes>
@@ -159,37 +81,38 @@
       <Top>
         <Row0>
           <Sizes>
-            <Toolbar-043BB848>
+            <Toolbar-0484B848>
               <key>iaridepm.enu1</key>
-            </Toolbar-043BB848>
+            </Toolbar-0484B848>
           </Sizes>
         </Row0>
         <Row1>
-          <Sizes/>
+          <Sizes>
+            <Toolbar-1D30AEB8>
+              <key>debuggergui.enu1</key>
+            </Toolbar-1D30AEB8>
+          </Sizes>
         </Row1>
-        <Row2>
-          <Sizes/>
-        </Row2>
       </Top>
       <Left>
         <Row0>
           <Sizes>
-            <Wnd3>
+            <Wnd0>
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
                 <Bottom>482</Bottom>
-                <Right>403</Right>
+                <Right>198</Right>
                 <x>-2</x>
                 <y>-2</y>
                 <xscreen>200</xscreen>
                 <yscreen>200</yscreen>
                 <sizeHorzCX>146413</sizeHorzCX>
                 <sizeHorzCY>275862</sizeHorzCY>
-                <sizeVertCX>296486</sizeVertCX>
+                <sizeVertCX>146413</sizeVertCX>
                 <sizeVertCY>667586</sizeVertCY>
               </Rect>
-            </Wnd3>
+            </Wnd0>
           </Sizes>
         </Row0>
       </Left>
@@ -201,7 +124,7 @@
       <Bottom>
         <Row0>
           <Sizes>
-            <Wnd2>
+            <Wnd1>
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
@@ -216,7 +139,7 @@
                 <sizeVertCX>146413</sizeVertCX>
                 <sizeVertCY>275862</sizeVertCY>
               </Rect>
-            </Wnd2>
+            </Wnd1>
           </Sizes>
         </Row0>
       </Bottom>

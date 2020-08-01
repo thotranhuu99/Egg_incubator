@@ -10,6 +10,8 @@ C:\Users\thotr\Documents\IAR_Project\Egg_incubator\STM8S_StdPeriph_Driver\inc
 -I
 C:\Users\thotr\Documents\IAR_Project\Egg_incubator\STM8S_StdPeriph_Driver\src
 -I
+C:\Users\thotr\Documents\IAR_Project\Egg_incubator\STM8S_StdPeriph_Driver\my_lib
+-I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\stm8\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\stm8\inc\c
@@ -21,6 +23,8 @@ C:\Users\thotr\Documents\IAR_Project\Egg_incubator\STM8S_StdPeriph_Driver
 C:\Users\thotr\Documents\IAR_Project\Egg_incubator\STM8S_StdPeriph_Driver\inc
 -I
 C:\Users\thotr\Documents\IAR_Project\Egg_incubator\STM8S_StdPeriph_Driver\src
+-I
+C:\Users\thotr\Documents\IAR_Project\Egg_incubator\STM8S_StdPeriph_Driver\my_lib
 -DSTM8S103=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
