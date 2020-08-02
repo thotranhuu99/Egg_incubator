@@ -38,7 +38,7 @@ ShowSource=1
 [Simulator]
 Freq=16000000
 [DebugChecksum]
-Checksum=-1252731624
+Checksum=2145269981
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -47,8 +47,6 @@ MixedMode=1
 LogEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
-[Breakpoints]
-Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -56,6 +54,9 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[Breakpoints]
+Bp0=_ "STD_DATA" "UART1_RX_IRQHandler" 0 0 0 3 0 "" 0 ""
+Count=1
 [Aliases]
 Count=0
 SuppressDialog=0
