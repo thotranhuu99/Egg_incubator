@@ -1,3 +1,4 @@
+#MicroXplorer Configuration settings - do not modify
 File.Version=6
 KeepUserPlacement=false
 Mcu.Family=STM8S
@@ -50,4 +51,3 @@ RCC.RCC_Master_Clock_Source_FROM_HSI=RCC_HSIDIV_DIV1
 RCC.SPIFreq_Value=16000000
 RCC.TIMFreq_Value=16000000
 RCC.UARTFreq_Value=16000000
-ProjectManager.ProjectFileName=Egg_incubator.ioc8
